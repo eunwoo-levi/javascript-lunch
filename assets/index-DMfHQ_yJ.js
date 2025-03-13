@@ -58,10 +58,10 @@ function DetailModal(container, inputValue) {
           <div class="restaurant-detail-modal">
               <div class="restaurant-detail-modal-images">
                   <div class="restaurant__category">
-                      <img src="/category-${inputValue.category}.png" alt="${inputValue.categoryValue}" class="category-icon"/>
+                      <img src="./category-${inputValue.category}.png" alt="${inputValue.categoryValue}" class="category-icon"/>
                   </div>
                   <button class="restaurant-favorite-star-button">
-                    <img class="restaurant-favorite-star" src=${inputValue.favorite === false ? "/favorite-icon-lined.png" : "/favorite-icon-filled.png"} alt="favorite star"/>
+                    <img class="restaurant-favorite-star" src=${inputValue.favorite === false ? "./favorite-icon-lined.png" : "./favorite-icon-filled.png"} alt="favorite star"/>
                   </button>
               </div>
               <div class="restaurant-detail-modal-info">
@@ -217,7 +217,7 @@ function createRestaurantItem(container, inputValue) {
   container.innerHTML += `
     <li class="restaurant">
       <div class="restaurant__category">
-        <img src="/category-${inputValue.category}.png" alt="${inputValue.categoryValue}" class="category-icon"/>
+        <img src="./category-${inputValue.category}.png" alt="${inputValue.categoryValue}" class="category-icon"/>
       </div>
       <div class="restaurant__info">
         <div class="restaurant-info-header">
@@ -228,7 +228,7 @@ function createRestaurantItem(container, inputValue) {
             </span>
           </div>
           <button class="restaurant-favorite-star-button">
-            <img class="restaurant-favorite-star" src=${inputValue.favorite === false ? "/favorite-icon-lined.png" : "/favorite-icon-filled.png"} alt="favorite star"/>
+            <img class="restaurant-favorite-star" src=${inputValue.favorite === false ? "./favorite-icon-lined.png" : "./favorite-icon-filled.png"} alt="favorite star"/>
           </button>
         </div>
         <p class="restaurant__description text-body">${inputValue.descriptionValue}</p>
