@@ -96,6 +96,10 @@ body {
   margin-top: 24px;
 }
 
+.restaurant-filter-container.active {
+  display: none;
+}
+
 .restaurant-filter-container select {
   height: 44px;
   min-width: 125px;
@@ -150,6 +154,7 @@ body {
 }
 
 .restaurant__info {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -163,6 +168,13 @@ body {
   color: var(--primary-color);
 }
 
+.restaurant-info-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .restaurant__description {
   display: -webkit-box;
 
@@ -172,6 +184,29 @@ body {
   text-overflow: ellipsis;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.restaurant__name-distance {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.restaurant__name-distance:hover {
+  background-color: #e6e6e6;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.restaurant-favorite-star {
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.restaurant-favorite-star-button {
+  background: none;
+  border: none;
 }
 
 /* 음식점 추가 모달 *****************************************/
@@ -295,4 +330,112 @@ input[name="link"] {
   background: var(--primary-color);
 
   color: var(--grey-100);
+}
+
+.header-category {
+  width: 100%;
+  height: 44px;
+  margin-top: 30px;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.header-category-button {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 2px solid #d0d5dd;
+  font-size: 16px;
+  font-weight: 700;
+  color: #667085;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.header-category-button.active {
+  border-bottom: 3px solid red;
+  color: red;
+}
+
+.restaurant-detail-modal-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.restaurant-detail-modal {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px 16px;
+  border-radius: 8px 8px 0 0;
+}
+
+.restaurant-detail-modal-images {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.restaurant-detail-modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.restaurant__detail__modal__description {
+  padding-top: 8px;
+}
+
+.restaurant-detail-modal-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 20px;
+}
+
+.restaurant-detail-modal-delete-button {
+  font-size: 16px;
+  font-weight: 700;
+  background-color: white;
+  color: #667085;
+  border-color: #667085;
+  padding: 15px 50px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.restaurant-detail-modal-delete-button:hover {
+  background-color: #d4d4d4;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.restaurant-detail-modal-close-button {
+  font-size: 16px;
+  font-weight: 700;
+  background-color: red;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.restaurant-detail-modal-close-button:hover {
+  background-color: #be0404;
+  color: white;
+  transition: background-color 0.3s ease;
 }
