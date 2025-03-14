@@ -438,12 +438,24 @@ function CloseModalEvent() {
   const $closeModalButton = document.querySelector(
     ".restaurant-detail-modal-close-button"
   );
-  $closeModalButton == null ? void 0 : $closeModalButton.addEventListener("click", () => {
+  $closeModalButton.addEventListener("click", () => {
     const $modal = document.querySelector(
       ".restaurant-detail-modal-background"
     );
     $modal == null ? void 0 : $modal.remove();
     location.reload();
+  });
+  CloseOnDarkBackground();
+}
+function CloseOnDarkBackground() {
+  const $modalBackground = document.querySelector(
+    ".restaurant-detail-modal-background"
+  );
+  $modalBackground.addEventListener("click", (e) => {
+    if (e.target === $modalBackground) {
+      $modalBackground.remove();
+      location.reload();
+    }
   });
 }
 function CreateRestaurantList(restaurants) {
