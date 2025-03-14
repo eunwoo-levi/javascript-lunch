@@ -52,6 +52,151 @@ function InitHeader() {
   const $headerContainer = document.querySelector(".gnb");
   Header($headerContainer);
 }
+const CATEGORY_OPTIONS = [
+  { value: "한식", text: "한식" },
+  { value: "중식", text: "중식" },
+  { value: "일식", text: "일식" },
+  { value: "양식", text: "양식" },
+  { value: "아시안", text: "아시안" },
+  { value: "기타", text: "기타" }
+];
+const DISTANCE_OPTIONS = [
+  { value: 5, text: "5분 내" },
+  { value: 10, text: "10분 내" },
+  { value: 15, text: "15분 내" },
+  { value: 20, text: "20분 내" },
+  { value: 30, text: "30분 내" }
+];
+function CustomDropdown({
+  label,
+  name,
+  id,
+  options,
+  required
+}) {
+  return `
+    <div class="form-item ${"form-item--required"}">
+      <label for="${id}" class="text-caption">${label}</label>
+      <select name="${name}" id="${id}" ${"required"}>
+        <option value="">선택해 주세요</option>
+        ${options.map(
+    (option) => `<option value="${option.value}">${option.text}</option>`
+  ).join("")}
+      </select>
+    </div>
+  `;
+}
+const MESSAGES = Object.freeze({
+  MAXIMUM_NAME_LENGTH: 30,
+  MAXIMUM_DESCRIPTION_LENGTH: 1500,
+  SELECT_TYPE: 6,
+  MAXIMUM_INPUT_LENGTH: 2048
+});
+function CustomInput({
+  label,
+  name,
+  id,
+  type = "text",
+  required = false
+}) {
+  return `
+      <div class="form-item ${required && "form-item--required"}">
+        <label for="${id}" class="text-caption">${label}</label>
+        <input maxlength="${MESSAGES.MAXIMUM_INPUT_LENGTH}" type="${type}" name="${name}" id="${id}" ${required && "required"} />
+      </div>
+    `;
+}
+function CustomButton({
+  id,
+  type,
+  className,
+  text
+}) {
+  return `
+    <button 
+      ${id && `id="${id}"`}
+      ${type && `type="${type}"`}
+      ${className && `class="button ${className} text-caption"`} 
+    >
+      ${text}
+    </button>
+  `;
+}
+function AddRestaurantModal(container) {
+  container.innerHTML += `
+        <div class="modal modal--open">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container">
+          <h2 class="modal-title text-title">새로운 음식점</h2>
+          <form>
+            <!-- 카테고리 -->
+             ${CustomDropdown({
+    label: "카테고리",
+    name: "category",
+    id: "category",
+    options: CATEGORY_OPTIONS,
+    required: true
+  })}
+
+            <!-- 음식점 이름 -->
+             ${CustomInput({
+    label: "이름",
+    name: "name",
+    id: "name",
+    type: "text",
+    required: true
+  })}
+            
+            <!-- 거리 -->
+              ${CustomDropdown({
+    label: "거리(도보 이동 시간)",
+    name: "distance",
+    id: "distance",
+    options: DISTANCE_OPTIONS,
+    required: true
+  })}
+            
+            <!-- 설명 -->
+            <div class="form-item">
+              <label for="description" class="text-caption">설명</label>
+              <textarea
+                name="description"
+                id="description"
+                cols="30"
+                rows="5"
+              ></textarea>
+              <span class="help-text text-caption">
+                메뉴 등 추가 정보를 입력해 주세요.
+              </span>
+            </div>
+
+            <!-- 링크 -->
+             ${CustomInput({
+    label: "참고 링크",
+    name: "link",
+    id: "link",
+    type: "text"
+  })}
+
+            <!-- 취소/추가 버튼 -->
+            <div class="button-container">
+          ${CustomButton({
+    id: "close-modal",
+    type: "close",
+    className: "button--secondary",
+    text: "취소하기"
+  })}
+          ${CustomButton({
+    type: "submit",
+    className: "button--primary",
+    text: "추가하기"
+  })}
+            </div>
+          </form>
+        </div>
+      </div>
+  `;
+}
 function AddNewRestaurant({ restaurant }) {
   if (!GetAllRestaurants()) {
     localStorage.setItem("restaurants", JSON.stringify([restaurant]));
@@ -80,6 +225,105 @@ function DeleteRestaurant(restaurantName) {
     (restaurant) => restaurant.nameValue !== restaurantName
   );
   localStorage.setItem("restaurants", JSON.stringify(filteredRestaurants));
+}
+const categoryMapping = {
+  한식: "korean",
+  중식: "chinese",
+  일식: "japanese",
+  양식: "western",
+  아시안: "asian",
+  기타: "etc",
+  에러: "error_category"
+};
+const ERRORS = Object.freeze({
+  EMPTY_SELECT: (title) => `${title} 중 하나를 선택해야 합니다.`,
+  EMPTY_NAME: "이름은 공백일 수 없습니다.",
+  MAXIMUM_NAME: "이름은 30자를 넘길 수 없습니다.",
+  MAXIMUM_DESCRIPTION: "설명은 1500자를 넘길 수 없습니다."
+});
+const validateNameInput = (input) => {
+  if (input === "") {
+    throw new Error(ERRORS.EMPTY_NAME);
+  }
+  if (input.length > MESSAGES.MAXIMUM_NAME_LENGTH) {
+    throw new Error(ERRORS.MAXIMUM_NAME);
+  }
+};
+const validateDescriptionInput = (input) => {
+  if (input.length > MESSAGES.MAXIMUM_DESCRIPTION_LENGTH) {
+    throw new Error(ERRORS.MAXIMUM_DESCRIPTION);
+  }
+};
+const validateSelectInput = (selectValue, title) => {
+  if (selectValue === "") {
+    throw new Error(ERRORS.EMPTY_SELECT(title));
+  }
+};
+function InitModalHandler() {
+  const $modalButton = document.getElementById(
+    "gnb-button"
+  );
+  const $appContainer = document.getElementById("app");
+  $modalButton.addEventListener("click", () => {
+    AddRestaurantModal($appContainer);
+    InitModalEvents();
+  });
+}
+function InitModalEvents() {
+  const $addRestaurantButton = document.querySelector(
+    ".button--primary"
+  );
+  const $closeModalButton = document.getElementById(
+    "close-modal"
+  );
+  $addRestaurantButton.addEventListener("click", HandleAddRestaurant);
+  $closeModalButton.addEventListener("click", CloseModal);
+}
+function HandleAddRestaurant(e) {
+  e.preventDefault();
+  const $category = document.getElementById("category");
+  const $name = document.getElementById("name");
+  const $distance = document.getElementById("distance");
+  const $description = document.getElementById(
+    "description"
+  );
+  const $link = document.getElementById("link");
+  try {
+    const categoryValue = $category.value;
+    validateSelectInput(categoryValue, "카테고리");
+    const nameValue = $name.value.trim();
+    validateNameInput(nameValue);
+    const distanceValue = $distance.value;
+    validateSelectInput(distanceValue, "거리");
+    const descriptionValue = $description.value;
+    validateDescriptionInput(descriptionValue);
+    const category = categoryMapping[categoryValue];
+    const link = $link.value;
+    const inputValue = {
+      category,
+      categoryValue,
+      nameValue,
+      distanceValue: Number(distanceValue),
+      descriptionValue,
+      link,
+      favorite: false
+    };
+    AddNewRestaurant({ restaurant: inputValue });
+    location.reload();
+    CloseModal();
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(
+        error.message || "알 수 없는 오류로 인해 새로운 음식점 추가를 실패했습니다."
+      );
+    }
+  }
+}
+function CloseModal() {
+  const $modal = document.querySelector(".modal");
+  if ($modal) {
+    $modal.remove();
+  }
 }
 function DetailModal(container, inputValue) {
   container.innerHTML += `
@@ -167,6 +411,7 @@ function RestaurantDetailModal() {
       const restaurantValues = restaurants.find(
         (restaurant2) => restaurant2.nameValue === restaurantName
       );
+      if (!restaurantValues) return;
       DetailModal($app, restaurantValues);
       SaveFavoriteRestaurantInModal();
       DeleteModalEvent();
@@ -369,228 +614,6 @@ function InitRestaurantList() {
   const restaurants = GetAllRestaurants();
   CreateRestaurantList(restaurants);
   HeaderCategory();
-}
-const CATEGORY_OPTIONS = [
-  { value: "한식", text: "한식" },
-  { value: "중식", text: "중식" },
-  { value: "일식", text: "일식" },
-  { value: "양식", text: "양식" },
-  { value: "아시안", text: "아시안" },
-  { value: "기타", text: "기타" }
-];
-const DISTANCE_OPTIONS = [
-  { value: 5, text: "5분 내" },
-  { value: 10, text: "10분 내" },
-  { value: 15, text: "15분 내" },
-  { value: 20, text: "20분 내" },
-  { value: 30, text: "30분 내" }
-];
-function CustomDropdown({ label, name, id, options, required }) {
-  return `
-    <div class="form-item ${"form-item--required"}">
-      <label for="${id}" class="text-caption">${label}</label>
-      <select name="${name}" id="${id}" ${"required"}>
-        <option value="">선택해 주세요</option>
-        ${options.map(
-    (option) => `<option value="${option.value}">${option.text}</option>`
-  ).join("")}
-      </select>
-    </div>
-  `;
-}
-const MESSAGES = Object.freeze({
-  MAXIMUM_NAME_LENGTH: 30,
-  MAXIMUM_DESCRIPTION_LENGTH: 1500,
-  SELECT_TYPE: 6,
-  MAXIMUM_INPUT_LENGTH: 2048
-});
-function CustomInput({
-  label,
-  name,
-  id,
-  type = "text",
-  required = false
-}) {
-  return `
-      <div class="form-item ${required ? "form-item--required" : ""}">
-        <label for="${id}" class="text-caption">${label}</label>
-        <input maxlength="${MESSAGES.MAXIMUM_INPUT_LENGTH}" type="${type}" name="${name}" id="${id}" ${required ? "required" : ""} />
-      </div>
-    `;
-}
-function CustomButton({ id, type, className, text }) {
-  return `
-    <button 
-      ${id && `id="${id}"`}
-      ${type && `type="${type}"`}
-      ${className && `class="button ${className} text-caption"`} 
-    >
-      ${text}
-    </button>
-  `;
-}
-function AddRestaurantModal(container) {
-  container.innerHTML += `
-        <div class="modal modal--open">
-        <div class="modal-backdrop"></div>
-        <div class="modal-container">
-          <h2 class="modal-title text-title">새로운 음식점</h2>
-          <form>
-            <!-- 카테고리 -->
-             ${CustomDropdown({
-    label: "카테고리",
-    name: "category",
-    id: "category",
-    options: CATEGORY_OPTIONS,
-    required: true
-  })}
-
-            <!-- 음식점 이름 -->
-             ${CustomInput({
-    label: "이름",
-    name: "name",
-    id: "name",
-    type: "text",
-    required: true
-  })}
-            
-            <!-- 거리 -->
-              ${CustomDropdown({
-    label: "거리(도보 이동 시간)",
-    name: "distance",
-    id: "distance",
-    options: DISTANCE_OPTIONS,
-    required: true
-  })}
-            
-            <!-- 설명 -->
-            <div class="form-item">
-              <label for="description" class="text-caption">설명</label>
-              <textarea
-                name="description"
-                id="description"
-                cols="30"
-                rows="5"
-              ></textarea>
-              <span class="help-text text-caption">
-                메뉴 등 추가 정보를 입력해 주세요.
-              </span>
-            </div>
-
-            <!-- 링크 -->
-             ${CustomInput({
-    label: "참고 링크",
-    name: "link",
-    id: "link",
-    type: "text"
-  })}
-
-            <!-- 취소/추가 버튼 -->
-            <div class="button-container">
-          ${CustomButton({
-    id: "close-modal",
-    type: "close",
-    className: "button--secondary",
-    text: "취소하기"
-  })}
-          ${CustomButton({
-    type: "submit",
-    className: "button--primary",
-    text: "추가하기"
-  })}
-            </div>
-          </form>
-        </div>
-      </div>
-  `;
-}
-const categoryMapping = {
-  한식: "korean",
-  중식: "chinese",
-  일식: "japanese",
-  양식: "western",
-  아시안: "asian",
-  기타: "etc",
-  에러: "error_category"
-};
-const ERRORS = Object.freeze({
-  EMPTY_SELECT: (title) => `${title} 중 하나를 선택해야 합니다.`,
-  EMPTY_NAME: "이름은 공백일 수 없습니다.",
-  MAXIMUM_NAME: "이름은 30자를 넘길 수 없습니다.",
-  MAXIMUM_DESCRIPTION: "설명은 1500자를 넘길 수 없습니다."
-});
-const validateNameInput = (input) => {
-  if (input === "") {
-    throw new Error(ERRORS.EMPTY_NAME);
-  }
-  if (input.length > MESSAGES.MAXIMUM_NAME_LENGTH) {
-    throw new Error(ERRORS.MAXIMUM_NAME);
-  }
-};
-const validateDescriptionInput = (input) => {
-  if (input.length > MESSAGES.MAXIMUM_DESCRIPTION_LENGTH) {
-    throw new Error(ERRORS.MAXIMUM_DESCRIPTION);
-  }
-};
-const validateSelectInput = (selectValue, title) => {
-  if (selectValue === "") {
-    throw new Error(ERRORS.EMPTY_SELECT(title));
-  }
-};
-function InitModalHandler() {
-  const $modalButton = document.getElementById("gnb-button");
-  const $appContainer = document.getElementById("app");
-  $modalButton.addEventListener("click", () => {
-    AddRestaurantModal($appContainer);
-    InitModalEvents();
-  });
-}
-function InitModalEvents() {
-  const $addRestaurantButton = document.querySelector(".button--primary");
-  const $closeModalButton = document.getElementById("close-modal");
-  $addRestaurantButton.addEventListener("click", HandleAddRestaurant);
-  $closeModalButton.addEventListener("click", CloseModal);
-}
-function HandleAddRestaurant(e) {
-  e.preventDefault();
-  const $category = document.getElementById("category");
-  const $name = document.getElementById("name");
-  const $distance = document.getElementById("distance");
-  const $description = document.getElementById("description");
-  const $link = document.getElementById("link");
-  try {
-    const categoryValue = $category.value;
-    validateSelectInput(categoryValue, "카테고리");
-    const nameValue = $name.value.trim();
-    validateNameInput(nameValue);
-    const distanceValue = $distance.value;
-    validateSelectInput(distanceValue, "거리");
-    const descriptionValue = $description.value;
-    validateDescriptionInput(descriptionValue);
-    const category = categoryMapping[categoryValue];
-    const link = $link.value;
-    const inputValue = {
-      category,
-      categoryValue,
-      nameValue,
-      distanceValue,
-      descriptionValue,
-      link,
-      favorite: false
-    };
-    const $restaurantList = document.querySelector(".restaurant-list");
-    AddNewRestaurant({ restaurant: inputValue });
-    location.reload();
-    CloseModal();
-  } catch (error) {
-    alert(error.message);
-  }
-}
-function CloseModal() {
-  const $modal = document.querySelector(".modal");
-  if ($modal) {
-    $modal.remove();
-  }
 }
 addEventListener("load", () => {
   InitHeader();
