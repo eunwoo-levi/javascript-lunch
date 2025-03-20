@@ -1,11 +1,11 @@
-import { Restaurant } from "../shared/types";
+import { Restaurant } from "../../shared/types";
 import {
   DeleteRestaurant,
   GetAllRestaurants,
-} from "../domain/RestaurantService";
-import { SaveFavoriteRestaurantInModal } from "../components/SaveFavoriteRestaurant";
+} from "../../domain/RestaurantService";
+import { SaveFavoriteRestaurantInModal } from "../restaurant/SaveFavoriteRestaurant";
 import DetailModal from "./DetailModal";
-import { CreateRestaurantList } from "../components/CreateRestaurantList";
+import { CreateRestaurantList } from "../restaurant/CreateRestaurantList";
 
 export default function RestaurantDetailModal() {
   const $app = document.getElementById("app") as HTMLElement;

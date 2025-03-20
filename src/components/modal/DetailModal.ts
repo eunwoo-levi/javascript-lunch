@@ -1,4 +1,4 @@
-import { Restaurant } from "../shared/types";
+import { Restaurant } from "../../shared/types";
 
 export default function DetailModal(
   container: HTMLElement,

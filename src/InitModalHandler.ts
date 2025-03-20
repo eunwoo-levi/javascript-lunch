@@ -3,14 +3,14 @@ import {
   AddNewRestaurant,
   GetAllRestaurants,
 } from "./domain/RestaurantService";
-import { CreateRestaurantList } from "./components/CreateRestaurantList";
+import { CreateRestaurantList } from "./components/restaurant/CreateRestaurantList";
 import { categoryMapping } from "./utils/categoryMapping";
 import {
   validateDescriptionInput,
   validateNameInput,
   validateSelectInput,
 } from "./validation/validator";
-import AddRestaurantModal from "./modal/AddRestaurantModal";
+import AddRestaurantModal from "./components/modal/AddRestaurantModal";
 
 export default function InitModalHandler() {
   const $modalButton = document.getElementById(

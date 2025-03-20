@@ -1,6 +1,6 @@
-import { SaveFavoriteRestaurant } from "./SaveFavoriteRestaurant";
-import { Restaurant } from "../shared/types";
+import { Restaurant } from "../../shared/types";
 import RestaurantDetailModal from "../modal/RestaurantDetailModal";
+import { SaveFavoriteRestaurant } from "./SaveFavoriteRestaurant";
 
 export function CreateRestaurantList(restaurants: Restaurant[]) {
   const $restaurantListContainer = document.querySelector(

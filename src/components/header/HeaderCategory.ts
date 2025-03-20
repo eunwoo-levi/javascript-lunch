@@ -1,8 +1,8 @@
-import { CreateRestaurantList } from "./CreateRestaurantList";
-import { GetAllRestaurants } from "../domain/RestaurantService";
-import { Restaurant } from "../shared/types";
-import FilteredRestaurant from "./FilteredRestaurant";
-import SortedRestaurant from "./SortedRestaurant";
+import { CreateRestaurantList } from "../restaurant/CreateRestaurantList";
+import { GetAllRestaurants } from "../../domain/RestaurantService";
+import { Restaurant } from "../../shared/types";
+import FilteredRestaurant from "../restaurant/FilteredRestaurant";
+import SortedRestaurant from "../restaurant/SortedRestaurant";
 
 export default function HeaderCategory() {
   const $allButton = document.getElementById("all-button") as HTMLButtonElement;
